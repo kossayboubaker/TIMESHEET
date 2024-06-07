@@ -1,0 +1,51 @@
+<body>
+  <br>
+<main>
+  <form (ngSubmit)="register()" #registerForm="ngForm" method="get">
+    <h1>Page Inscription</h1>
+    <div>
+      <label for="nom">Nom d'utilisateur :</label>
+      <input type="text" id="nom" name="nom" placeholder="Nom d'utilisateur" [(ngModel)]="utilisateur.nom" required>
+    </div>
+    <div>
+      <label for="prenom">Prenom d'utilisateur :</label>
+      <input type="text" id="prenom" name="prenom" placeholder="Prenom d'utilisateur" [(ngModel)]="utilisateur.prenom" required>
+    </div>
+    <div>
+      <label for="email">Email :</label>
+      <input type="email" id="email" name="email" placeholder="email" [(ngModel)]="utilisateur.email" required>
+    </div>
+    <div>
+      <label for="datenais">Date de Naissance :</label>
+      <input type="date" id="datenais" name="datenais" [(ngModel)]="utilisateur.datenais" required>
+    </div>
+    <div>
+      <label for="telephone">Telephone :</label>
+      <input type="text" id="telephone" name="telephone" placeholder="Telephone" [(ngModel)]="utilisateur.telephone" required>
+    </div>
+    <div>
+      <label for="dateemboche">Date d'emboche :</label>
+      <input type="date" id="dateemboche" name="dateemboche" [(ngModel)]="utilisateur.dateemboche" required>
+    </div>
+    <div>
+      <label for= "role">Role :</label>
+      <select class="form-select" aria-label="Default select example" [(ngModel)]="utilisateur.role" name="role" required>
+        <option value="" disabled selected>Choisir votre role</option>
+        <option value="Employer">Employer</option>
+        <option value="Gestionnaire">Gestionnaire</option>
+
+      </select>
+    </div>
+    <div>
+      <label for="motdepasse">Mot de passe :</label>
+      <input type="password" id="motdepasse" name="motdepasse" placeholder="Mot de passe" [(ngModel)]="utilisateur.motdepasse" required>
+    </div>
+    <div>
+      <label for="confirmMotdepasse">Confirmer Mot de passe :</label>
+      <input type="password" id="confirmMotdepasse" name="confirmMotdepasse" placeholder="Confirmer mot de passe" [(ngModel)]="utilisateur.confirmMotdepasse" required>
+    </div>
+    <button type="submit" [disabled]="!registerForm.form.valid">S'inscrire</button>
+    <div class="mt-2">Déjà membre? <a routerLink="/connexion">Connexion</a></div>
+  </form>
+</main>
+</body>

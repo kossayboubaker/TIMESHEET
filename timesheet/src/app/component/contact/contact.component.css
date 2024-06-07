@@ -1,0 +1,78 @@
+/* Add some basic styling to the form */
+
+h1 {
+  font-size: 24px;
+  color: #333; /* Couleur du texte */
+  text-align: center; /* Alignement du texte au centre */
+  margin-bottom: 20px; /* Marge en bas pour l'espace */
+  /* Autres styles selon vos préférences */
+}
+.container {
+  display: flex;
+  height: 100vh;
+}
+.background-image {
+  flex: 1;
+  background-image: url('https://geekflare.com/cdn-cgi/image/width=1200,height=630,fit=crop,quality=90,format=auto,onerror=redirect,metadata=none/wp-content/uploads/sites/26/2022/01/Timesheet-Templates-to-Track-Time-Spent-by-Employees.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+
+form {
+  position: relative;
+  max-width: 450px;
+  margin: 40px auto;
+  padding: 20px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 2550.5);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-self: center;
+  }
+  
+  /* Style the form labels and inputs */
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+  }
+  
+  input[type="email"] {
+    /* Add a slight yellow background to the email input */
+    background-color: #f9f9f9;
+  }
+  
+  textarea {
+    /* Make the textarea a bit taller */
+    height: 100px;
+  }
+  
+  /* Style the submit button */
+  button[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #3e8e41;
+  }

@@ -1,0 +1,29 @@
+<body>
+<div class="container">
+  <div class="background-image"></div>
+  <div class="form-container">
+<br>
+<form (ngSubmit)="submitReview()">
+    <label for="nom">Name:</label>
+    <input id="nom" [(ngModel)]="client.nom" name="nom" required>
+
+    <label for="email">Email:</label>
+    <input id="email" [(ngModel)]="client.email" name="email" required type="email">
+
+    <label for="projet">Project:</label>
+    <input id="projet" [(ngModel)]="client.projet" name="projet" required>
+
+    <label for="notation">notation:</label>
+    <input id="notation" [(ngModel)]="client.notation" name="notation" type="number" min="1" max="5" required>
+
+    <label for="revoir">Review:</label>
+    <textarea id="revoir" [(ngModel)]="client.revoir" name="revoir" required></textarea>
+
+    <label for="photo">Photo:</label>
+    <input id="photo" type="file" (change)="onFileSelected($event)">
+
+    <button type="submit">Submit Review</button>
+  </form>
+</div>
+</div>
+</body>

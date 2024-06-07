@@ -1,0 +1,66 @@
+body{
+  background-image: url('https://audreytips.com/wp-content/uploads/2021/03/comment-utiliser-les-avis-clients-pour-creer-de-la-rentabilite-et-booster-votre-croissance.jpg');
+  background-position: center;
+  background-size: cover;
+  min-height: 120vh;
+  width: 100%;
+
+}
+
+
+form {
+  position: relative;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 2550.5);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-self: center;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+  }
+  
+  input[type="file"] {
+    padding: 3px;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #218838;
+  }
+  

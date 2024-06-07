@@ -1,0 +1,22 @@
+<div class="container">
+    <p>Experts</p>
+    <h1>Mombres de notre equipes</h1>
+    <div class="card-wrapper">
+      <div class="card" *ngFor="let member of teamMembers">
+        <div class="profile-img">
+          <img [src]="member.profileImage" alt="" />
+        </div>
+        <div class="content">
+          <h3>{{ member.name }}</h3>
+          <p>{{ member.role }}</p>
+          <div class="social-media">
+           <a href="https://www.facebook.com/argui.karima?mibextid=ZbWKwL"><i class="fa-brands fa-facebook"></i></a>
+            <i class="fa-brands fa-youtube"></i>
+            <i class="fa-brands fa-instagram"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+

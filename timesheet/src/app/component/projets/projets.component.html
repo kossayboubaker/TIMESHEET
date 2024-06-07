@@ -1,0 +1,10 @@
+
+<div class="projects-container">
+  <h2>Nos Projets</h2>
+  <div class="project-card" *ngFor="let project of projets">
+    <h3>{{ project.title }}</h3>
+    <p>{{ project.description }}</p>
+    <p>Langages / Technologies utilisés : {{ project.technologies }}</p>
+    <a [href]="project.githubLink" target="_blank">Lien GitHub</a>
+  </div>
+</div>

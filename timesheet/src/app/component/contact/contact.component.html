@@ -1,0 +1,28 @@
+
+
+  <div class="container">
+    <div class="background-image"></div>
+    <div class="form-container">
+      <br>
+<form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm.value)" method="get">
+  <h1>Contact Nous pour plus des informations</h1>
+    <div>
+      <label for="name">Nom:</label>
+      <input type="text" id="name" name="nom" placeholder="Nom"[(ngModel)]="contact.nom" required />
+    </div>
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Email"[(ngModel)]="contact.email" required />
+    </div>
+    <div>
+      <label for="sujet">Sujet:</label>
+      <input type="text" id="sujet" name="sujet"  placeholder="Sujet"[(ngModel)]="contact.sujet" required />
+    </div>
+    <div>
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" placeholder="Votre Message" [(ngModel)]="contact.message" rows="4" cols="50" required></textarea>
+    </div>
+    <button type="submit">Envoyer Message</button>
+  </form>
+</div>
+</div>

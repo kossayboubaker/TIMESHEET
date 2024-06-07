@@ -1,0 +1,13 @@
+<!-- src/app/project/listesprojets/listesprojets.component.html -->
+<div class="container">
+    <h2>Liste des projets</h2>
+    <ul>
+      <li *ngFor="let project of projects">
+        {{ project.nom }} - {{ project.description }}
+        <button (click)="editProject(project)">Modifier</button>
+        <button (click)="deleteProject(project.idP)">Supprimer</button>
+      </li>
+    </ul>
+    <app-project-form></app-project-form>
+  </div>
+  

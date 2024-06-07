@@ -1,0 +1,58 @@
+
+
+h1{
+  text-align: center;
+  margin-bottom: 30px;
+}
+body{
+  background-image: url('https://img.freepik.com/free-vector/flat-hand-drawn-time-management-illustration_23-2148830097.jpg');
+  background-position: center;
+  background-size: cover;
+  min-height: 120vh;
+  width: 100%;
+
+}
+
+form {
+  position: relative;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 2550.5);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-self: center;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}

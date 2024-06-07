@@ -1,0 +1,71 @@
+<!-- src/app/project/listesprojets/listesprojets.component.html -->
+<div class="container">
+    <h2>{{ editMode ? 'Modifier' : 'Ajouter' }} un projet</h2>
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="nom">Nom</label>
+        <input id="nom" formControlName="nom" type="text" />
+      </div>
+      <div>
+        <label for="description">Description</label>
+        <input id="description" formControlName="description" type="text" />
+      </div>
+      <div>
+        <label for="dateDebut">Date de début</label>
+        <input id="dateDebut" formControlName="dateDebut" type="date" />
+      </div>
+      <div>
+        <label for="dateFin">Date de fin</label>
+        <input id="dateFin" formControlName="dateFin" type="date" />
+      </div>
+      <div>
+        <label for="nbr_heures_travailler">Nombre d'heures travaillées</label>
+        <input id="nbr_heures_travailler" formControlName="nbr_heures_travailler" type="number" />
+      </div>
+      <div>
+        <label for="status">Status</label>
+        <input id="status" formControlName="status" type="text" />
+      </div>
+      <div>
+        <label for="tache">Tâche</label>
+        <input id="tache" formControlName="tache" type="text" />
+      </div>
+      <button type="submit">{{ editMode ? 'Modifier' : 'Ajouter' }}</button>
+      <button type="button" (click)="resetForm()">Annuler</button>
+    </form>
+  
+    <h2>Liste des projets</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Date de début</th>
+          <th>Date de fin</th>
+          <th>Nombre d'heures</th>
+          <th>Status</th>
+          <th>Tâche</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects">
+          <td>{{ project.idP }}</td>
+          <td>{{ project.nom }}</td>
+          <td>{{ project.description }}</td>
+          <td>{{ project.dateDebut }}</td>
+          <td>{{ project.dateFin }}</td>
+          <td>{{ project.nbr_heures_travailler }}</td>
+          <td>{{ project.status }}</td>
+          <td>{{ project.tache }}</td>
+          <td>
+            <button (click)="onEdit(project)">Modifier</button>
+            <button (click)="onDelete(project.idP)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  

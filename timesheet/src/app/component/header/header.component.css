@@ -1,0 +1,35 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.mat-toolbar {
+    background-color: #1976d2; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    height: 64px; /* Hauteur du toolbar */
+    margin-right: 20px; /* Marge à gauche entre les liens */
+    justify-content: flex-end; 
+  }
+  
+  /* Style du span contenant l'icône et le texte */
+  .mat-toolbar span {
+    display: flex; /* Utilisation de flexbox pour aligner les éléments */
+    align-items: center; /* Alignement vertical */
+  }
+  
+  /* Style des icônes mat-icon */
+  .mat-icon {
+    margin-right: 8px; /* Marge à droite de l'icône */
+  }
+  
+  /* Style du lien de navigation */
+  .mat-toolbar a {
+    color: white; /* Couleur du texte */
+    text-decoration: none; /* Suppression du soulignement */
+    margin-left: 12px; /* Marge à gauche entre les liens */
+ 
+  }
+  
+  /* Style du bouton de connexion */
+  .mat-toolbar a.mat-raised-button {
+    margin-left: 12px; /* Marge à gauche entre le bouton de connexion et les autres liens */
+  }
+  
