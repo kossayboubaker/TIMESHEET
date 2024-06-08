@@ -15,14 +15,14 @@ app.use(cors()); // Enable CORS
 app.use('/', userRoutes)
 
 // Route pour gérer la soumission du formulaire de contact
-app.post('/contact', (req, res) => {
-    const { nom, email, sujet, message } = req.body;
+app.post('/contact/new', (req, res) => {
+    const { nom, email, sujet, message, created_at } = req.body;
 
-    if (!nom || !email || !sujet || !message) {
+    if (!nom || !email || !sujet || !message || !created_at) {
         return res.status(400).send('All fields are required');
     }
 
-    db.query('INSERT INTO contact (nom, email, sujet, message) VALUES (?, ?, ?, ?)', [nom, email, sujet, message], (err, result) => {
+    db.query('INSERT INTO contact (nom, email, sujet, message, created_at) VALUES (?, ?, ?, ?, ?)', [nom, email, sujet, message, created_at], (err, result) => {
         if (err) {
             return res.status(500).json({msg:'Error inserting into database'});
         }
@@ -30,6 +30,57 @@ app.post('/contact', (req, res) => {
         // render vers le page home
 
         res.render('/accueil')
+    });
+});
+// route pour affiche contacts
+app.get('/contact', (req, res) => {
+    db.query('SELECT * FROM contact', (err, result) => {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+            // render vers le page home
+
+        }
+    })
+})
+// router pour affiche contact par nom
+app.get('/contact/:nom', (req, res) => {
+    const { nom } = req.params;
+    db.query('SELECT * FROM contact WHERE nom = ?', [nom], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            res.send(result)
+        } else {
+            res.send('No data found')
+        }
+    })
+})
+
+// route pour modifier contact
+app.put('/contact/modifier/:id', (req, res) => {
+    const { id } = req.params;
+    const { nom, email, sujet, message, created_at } = req.body;
+    db.query('UPDATE contact SET nom = ?, email = ?, sujet = ?, message = ?, created_at = ? WHERE id = ?', [nom, email, sujet, message, created_at, id], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('contact not found');
+        }
+        return res.status(200).send('contact updated successfully');
+    });
+})
+// methode pour le supprimer contact
+app.delete('/contact/:id', (req, res) => {
+    const { id } = req.params;
+    db.query('DELETE FROM contact WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error deleting from database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('contact not found');
+        }
+        return res.status(200).send('contact deleted successfully');
     });
 });
 
@@ -87,7 +138,7 @@ app.delete('/client-profile/:id', (req, res) => {
     });
 });
 // methode pour modifier le client
-app.put('/client-profile/:id', (req, res) => {
+app.put('/client-profile/modifier/:id', (req, res) => {
     const { id } = req.params;
     const { nom, email, projet, notation, revoir, photo } = req.body;
     db.query('UPDATE client SET nom = ?, email = ?, projet = ?, notation = ?, revoir = ?, photo = ? WHERE id = ?', [nom, email, projet, notation, revoir, photo, id], (err, result) => {
@@ -97,43 +148,6 @@ app.put('/client-profile/:id', (req, res) => {
             return res.status(404).send('client not found');
         }
         return res.status(200).send('client updated successfully');
-    });
-});
-// route pour affiche contacts
-app.get('/contact', (req, res) => {
-    db.query('SELECT * FROM contact', (err, result) => {
-        if (err) {
-            res.send(err)
-        } else {
-            res.send(result)
-            // render vers le page home
-
-        }
-    })
-})
-// router pour affiche contact par nom
-app.get('/contact/:nom', (req, res) => {
-    const { nom } = req.params;
-    db.query('SELECT * FROM contact WHERE nom = ?', [nom], (err, result) => {
-        if (err) {
-            res.send(err)
-        } else if (result.length > 0) {
-            res.send(result)
-        } else {
-            res.send('No data found')
-        }
-    })
-})
-// methode pour le supprimer contact
-app.delete('/contact/:id', (req, res) => {
-    const { id } = req.params;
-    db.query('DELETE FROM contact WHERE id = ?', [id], (err, result) => {
-        if (err) {
-            return res.status(500).send('Error deleting from database');
-        } else if (result.affectedRows === 0) {
-            return res.status(404).send('contact not found');
-        }
-        return res.status(200).send('contact deleted successfully');
     });
 });
 
@@ -196,7 +210,7 @@ app.get('/search/:nom', (req, res) => {
 app.use('/projet', userRoutes)
 
 // Route pour ajouter un projet
-app.post('/new', (req, res) => {
+app.post('/projet/new', (req, res) => {
   const { nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
   db.query('INSERT INTO projet (nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache) VALUES (?, ?, ?, ?, ?, ?, ?)', 
   [nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache], 
@@ -208,28 +222,88 @@ app.post('/new', (req, res) => {
   });
 });
 
-// donne une methode de modification d'un projet par son id
-app.put("/modifier/:idP", async (req, res) => {
-    try {
-        const { idP } = req.params;
-        const { nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
-        const update = await connection
-            .promise()
-            .query(
-                `UPDATE projet set nom = ?, description = ?, dateDebut = ?, dateFin = ?, nbr_heures_travailler = ?, status = ?, tache = ? where idP = ?`,
-                [ nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache, idP]
-            );
-        res.status(200).json({
-            message: "updated",
-            data: update,
-            res:send("modifier projet")
-        });
-    } catch (err) {
-        res.status(500).json({
-            message: err,
-        });
-    }
+// methode pour modifier un projet par son id
+app.put('/projet/modifier/:idP', (req, res) => {
+    const { idP } = req.params;
+    const { nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
+    db.query('UPDATE projet SET nom = ?, description = ?, dateDebut = ?, dateFin = ?, nbr_heures_travailler = ?, status = ?, tache = ? WHERE idP = ?',
+    [nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache, idP],
+    (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('Project not found');
+        }
+        return res.status(200).send('Project updated successfully');
+    });
 });
+
+// methode pour affiche tout le tache
+app.get('/taches', (req, res) => {
+    db.query('SELECT * FROM tache', (err, result) => {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+// affiche par id tache lorsque le resultat vide retourne message sinon retourne le resultat
+app.get('/tache/:idT', (req, res) => {
+    const { idT } = req.params;
+    db.query('SELECT * FROM tache WHERE id = ?', [idT], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            res.send(result)
+        } else {
+            res.send('No data found')
+        }
+    })
+})
+// methode pour ajouter une tache
+app.post('/tache/new', (req, res) => {
+  const { nom, description } = req.body;
+  db.query('INSERT INTO tache (nom, description) VALUES (?, ?)',
+  [nom, description],
+  (err, result) => {
+      if (err) {
+          return res.status(500).send('Error inserting into database');
+      }
+      return res.status(200).send('Tache added successfully');
+  });
+});
+
+// methode pour modifier une tache par son id
+app.put('/tache/modifier/:idT', (req, res) => {
+    const { idT } = req.params;
+    const { nom, description } = req.body;
+    db.query('UPDATE tache SET nom = ?, description = ? WHERE id = ?',
+    [nom, description, idT],
+    (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('Tache not found');
+        }
+        return res.status(200).send('Tache updated successfully');
+    });
+});
+
+// methode pour supprimer une tache par son id
+app.delete('/tache/supprimer/:idT', (req, res) => {
+    const { idT } = req.params;
+    db.query('DELETE FROM tache WHERE id = ?', [idT], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.affectedRows === 0) {
+            res.send('No data found')
+        } else {
+            res.send('Tache deleted successfully')
+        }
+    })
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
