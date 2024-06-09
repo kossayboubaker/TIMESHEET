@@ -16,13 +16,13 @@ app.use('/', userRoutes)
 
 // Route pour gérer la soumission du formulaire de contact
 app.post('/contact/new', (req, res) => {
-    const { nom, email, sujet, message, created_at } = req.body;
+    const { nom, idU, email, sujet, message, created_at } = req.body;
 
-    if (!nom || !email || !sujet || !message || !created_at) {
+    if (!nom || !idU || !email || !sujet || !message || !created_at) {
         return res.status(400).send('All fields are required');
     }
 
-    db.query('INSERT INTO contact (nom, email, sujet, message, created_at) VALUES (?, ?, ?, ?, ?)', [nom, email, sujet, message, created_at], (err, result) => {
+    db.query('INSERT INTO contact (nom, idU, email, sujet, message, created_at) VALUES (?, ?, ?, ?, ?, ?)', [nom, idU, email, sujet, message, created_at], (err, result) => {
         if (err) {
             return res.status(500).json({msg:'Error inserting into database'});
         }
@@ -32,19 +32,36 @@ app.post('/contact/new', (req, res) => {
         res.render('/accueil')
     });
 });
+// methode ajoute contact mais avec jointure entre le contact et l'utilisateur on selecte les informations de l'utilisateur et du contact
+
 // route pour affiche contacts
 app.get('/contact', (req, res) => {
-    db.query('SELECT * FROM contact', (err, result) => {
+    const {prenom, telephone} = req.body; // Récupérer le nom de l'utilisateur depuis le corps de la requête
+        db.query('SELECT utilisateurs.prenom, utilisateurs.telephone, contact.* FROM contact JOIN utilisateurs ON contact.idU = utilisateurs.id', [prenom, telephone], (err, result) => {
         if (err) {
             res.send(err)
         } else {
             res.send(result)
-            // render vers le page home
-
+            // render vers la page d'accueil
         }
     })
 })
-// router pour affiche contact par nom
+
+// methode pour affiche le contact on affiche le nom de utilisateur a partir de son id avec jointure
+
+app.get('/contact/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.query('SELECT utilisateurs.prenom, utilisateurs.telephone, contact.* FROM contact JOIN utilisateurs ON contact.idU = utilisateurs.id WHERE contact.id = ? ', [id, id], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            res.send(result[0]) // Retourne uniquement le premier résultat
+        } else {
+            res.send('No data found')
+        }
+    })
+})
 app.get('/contact/:nom', (req, res) => {
     const { nom } = req.params;
     db.query('SELECT * FROM contact WHERE nom = ?', [nom], (err, result) => {
@@ -61,8 +78,8 @@ app.get('/contact/:nom', (req, res) => {
 // route pour modifier contact
 app.put('/contact/modifier/:id', (req, res) => {
     const { id } = req.params;
-    const { nom, email, sujet, message, created_at } = req.body;
-    db.query('UPDATE contact SET nom = ?, email = ?, sujet = ?, message = ?, created_at = ? WHERE id = ?', [nom, email, sujet, message, created_at, id], (err, result) => {
+    const { nom, idU, email, sujet, message, created_at } = req.body;
+    db.query('UPDATE contact SET nom = ?, idU = ?, email = ?, sujet = ?, message = ?, created_at = ? WHERE id = ?', [nom, idU, email, sujet, message, created_at, id], (err, result) => {
         if (err) {
             return res.status(500).send('Error updating database');
         } else if (result.affectedRows === 0) {
@@ -155,7 +172,7 @@ app.put('/client-profile/modifier/:id', (req, res) => {
 app.use('/forgotmdp', userRoutes)
 
 
-app.get('/projet', (req, res) => {
+app.get('/projets', (req, res) => {
 
     db.query('SELECT * FROM projet', (err, result) => {
         if (err) {
@@ -211,9 +228,9 @@ app.use('/projet', userRoutes)
 
 // Route pour ajouter un projet
 app.post('/projet/new', (req, res) => {
-  const { nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
-  db.query('INSERT INTO projet (nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-  [nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache], 
+  const { nom, description, idE, idT, idC, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
+  db.query('INSERT INTO projet (nom, description, idE, idT, idC, dateDebut, dateFin, nbr_heures_travailler, status, tache) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+  [nom, description, idE, idT, idC, dateDebut, dateFin, nbr_heures_travailler, status, tache],
   (err, result) => {
       if (err) {
           return res.status(500).send('Error inserting into database');
@@ -225,9 +242,9 @@ app.post('/projet/new', (req, res) => {
 // methode pour modifier un projet par son id
 app.put('/projet/modifier/:idP', (req, res) => {
     const { idP } = req.params;
-    const { nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
-    db.query('UPDATE projet SET nom = ?, description = ?, dateDebut = ?, dateFin = ?, nbr_heures_travailler = ?, status = ?, tache = ? WHERE idP = ?',
-    [nom, description, dateDebut, dateFin, nbr_heures_travailler, status, tache, idP],
+    const { nom, description, idE, idT, idC, dateDebut, dateFin, nbr_heures_travailler, status, tache } = req.body;
+    db.query('UPDATE projet SET nom = ?, description = ?, idE = ?, idT = ?, idC = ?, dateDebut = ?, dateFin = ?, nbr_heures_travailler = ?, status = ?, tache = ? WHERE idP = ?',
+    [nom, description, idE, idT, idC, dateDebut, dateFin, nbr_heures_travailler, status, tache, idP],
     (err, result) => {
         if (err) {
             return res.status(500).send('Error updating database');
@@ -301,6 +318,139 @@ app.delete('/tache/supprimer/:idT', (req, res) => {
             res.send('No data found')
         } else {
             res.send('Tache deleted successfully')
+        }
+    })
+})
+
+
+// methode affiche tout le rapport
+app.get('/rapports', (req, res) => {
+    db.query('SELECT * FROM rapport', (err, result) => {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+// affiche par id rapport lorsque le resultat vide retourne message sinon retourne le resultat
+app.get('/rapport/:idR', (req, res) => {
+    const { idR } = req.params;
+    db.query('SELECT * FROM rapport WHERE id = ?', [idR], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            res.send(result)
+        } else {
+            res.send('No data found')
+        }
+    })
+})
+
+// methode pour ajouter un rapport
+app.post('/rapport/new', (req, res) => {
+  const {date_generation, contenu } = req.body;
+  db.query('INSERT INTO rapport (date_generation, contenu) VALUES (?, ?)',
+  [date_generation, contenu],
+  (err, result) => {
+      if (err) {
+          return res.status(500).send('Error inserting into database');
+      }
+      return res.status(200).send('Rapport added successfully');
+  });
+});
+// methode pour modifier un rapport par son id
+app.put('/rapport/modifier/:idR', (req, res) => {
+    const { idR } = req.params;
+    const { date_generation, contenu } = req.body;
+    db.query('UPDATE rapport SET date_generation = ?, contenu = ? WHERE id = ?',
+    [date_generation, contenu, idR],
+    (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('Rapport not found');
+        }
+        return res.status(200).send('Rapport updated successfully');
+    });
+});
+// methode pour supprimer un rapport par son id
+app.delete('/rapport/supprimer/:idR', (req, res) => {
+    const { idR } = req.params;
+    db.query('DELETE FROM rapport WHERE id = ?', [idR], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.affectedRows === 0) {
+            res.send('No data found')
+        } else {
+            res.send('Rapport deleted successfully')
+        }
+    })
+})
+
+
+// methode d'affichage de timesheet
+app.get('/timesheets', (req, res) => {
+    db.query('SELECT * FROM timesheet', (err, result) => {
+        if (err) {
+            res.send(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
+// methode pour afficher le timesheet par son id
+app.get('/timesheet/:idT', (req, res) => {
+    const { idT } = req.params;
+    db.query('SELECT * FROM timesheet WHERE id = ?', [idT], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.length > 0) {
+            res.send(result)
+        } else {
+            res.send('No data found')
+        }
+    })
+})
+// methode pour ajouter un timesheet
+app.post('/timesheet/new', (req, res) => {
+  const {	id,	idP, date_d, date_f, heures_travailler,	notes} = req.body;
+  db.query('INSERT INTO timesheet (id, idP, date_d, date_f, heures_travailler,notes) VALUES (?, ?, ?, ?, ?, ?)',
+  [id,	idP, date_d, date_f, heures_travailler,	notes],
+  (err, result) => {
+      if (err) {
+          return res.status(500).send('Error inserting into database');
+      }
+      return res.status(200).send('Timesheet added successfully');
+  });
+});
+
+// methode pour modifier un timesheet par son id
+app.put('/timesheet/modifier/:idT', (req, res) => {
+    const { idT } = req.params;
+    const { id, idP, date_d, date_f, heures_travailler, notes } = req.body;
+    db.query('UPDATE timesheet SET id = ?, idP = ?, date_d = ?, date_f = ?, heures_travailler = ?, notes = ? WHERE id = ?',
+    [id, idP, date_d, date_f, heures_travailler, notes, idT],
+    (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating database');
+        } else if (result.affectedRows === 0) {
+            return res.status(404).send('Timesheet not found');
+        }
+        return res.status(200).send('Timesheet updated successfully');
+    });
+});
+// methode pour supprimer un timesheet par son id
+app.delete('/timesheet/supprimer/:idT', (req, res) => {
+    const { idT } = req.params;
+    db.query('DELETE FROM timesheet WHERE id = ?', [idT], (err, result) => {
+        if (err) {
+            res.send(err)
+        } else if (result.affectedRows === 0) {
+            res.send('No data found')
+        } else {
+            res.send('Timesheet deleted successfully')
         }
     })
 })
