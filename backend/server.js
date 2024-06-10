@@ -227,22 +227,30 @@ app.post('/forgot-password', (req, res) => {
     })
 })
 
-// route
+// route pour affiche le projet et les information de client et les information de tache et les information de employe avec le jointure entre le quatre tables
 app.get('/projets', (req, res) => {
-
-    db.query('SELECT * FROM projet', (err, result) => {
+    db.query('SELECT projet.nom, projet.description, projet.datedebut, projet.datefin, projet.nbr_heures_travailler,projet.status, client.nom, client.email, employe.avatar, tache.nom, tache.description FROM projet \
+    INNER JOIN client ON projet.idC = client.id \
+    INNER JOIN employe ON projet.idE = employe.id \
+    INNER JOIN tache ON projet.idT = tache.id', (err, result) => {
         if (err) {
-            res.send(err)
+            res.status(500).send(err);
+        } else if (result.length > 0) {
+            res.json(result);
         } else {
-            res.send(result)
+            res.status(404).send('Aucune donnée trouvée');
         }
-    })
-})
+    });
+});
+
 
 // get par id projet lorsque le resultat vide retourne message sinon retourne le resultat
 app.get('/projet/:idP', (req, res) => {
     const { idP } = req.params;
-    db.query('SELECT * FROM projet WHERE idP = ?', [idP], (err, result) => {
+    db.query('SELECT projet.nom, projet.description, projet.datedebut, projet.datefin, projet.nbr_heures_travailler,projet.status, client.nom, client.email, employe.avatar, tache.nom, tache.description FROM projet \
+    INNER JOIN client ON projet.idC = client.id \
+    INNER JOIN employe ON projet.idE = employe.id \
+    INNER JOIN tache ON projet.idT = tache.id WHERE idP = ?', [idP], (err, result) => {
         if (err) {
             res.send(err)
         } else if (result.length > 0) {
@@ -266,19 +274,76 @@ app.delete('/projet/:idP', (req, res) => {
     });
 });
 // methode pour rechercher un projet par son id
-app.get('/search/:nom', (req, res) => {
-    const { idP } = req.params;
-    db.query('SELECT * FROM projet WHERE nom = ?', [idP], (err, result) => {
+// Recherche un projet par nom
+app.get('/search/projet/:nom', (req, res) => {
+    const { nom } = req.params;
+    db.query('SELECT * FROM projet WHERE nom = ?', [nom], (err, result) => {
         if (err) {
-            res.send(err)
+            res.status(500).send(err);
         } else if (result.length > 0) {
-            res.send(result)
+            res.json(result);
         } else {
-            res.send('No data found')
+            res.status(404).send('Aucune donnée trouvée');
         }
-    })
-})
+    });
+});
 
+// Recherche un utilisateur par email
+app.get('/search/email/:email', (req, res) => {
+    const { email } = req.params;
+    db.query('SELECT * FROM utilisateurs WHERE email = ?', [email], (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (result.length > 0) {
+            res.json(result);
+        } else {
+            res.status(404).send('Aucune donnée trouvée');
+        }
+    });
+});
+
+// Recherche des utilisateurs par nom, en ordre descendant
+app.get('/search/desc/:nom', (req, res) => {
+    const { nom } = req.params;
+    db.query('SELECT * FROM utilisateurs WHERE nom = ? ORDER BY nom DESC', [nom], (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (result.length > 0) {
+            res.json(result);
+        } else {
+            res.status(404).send('Aucune donnée trouvée');
+        }
+    });
+});
+
+// route pour faire la pagination sur les projets
+app.get('/projet/:page', (req, res) => {
+    const { page } = req.params;
+    db.query('SELECT * FROM projet LIMIT  OFFSET ?', [page * 5], (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (result.length > 0) {
+            res.json(result);
+        } else {
+            res.status(404).send('Aucune donnée trouvée');
+        }
+    });
+});
+
+// route pour faire la pagination sur les utilisateurs
+app.get('/utilisateurs/:page', (req, res) => {
+    const { page } = req.params;
+    const offset = (page - 1) * 5;
+    db.query('SELECT * FROM utilisateurs LIMIT 5 OFFSET ?', [offset], (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (result.length > 0) {
+            res.json(result);
+        } else {
+            res.status(404).send('Aucune donnée trouvée');
+        }
+    });
+});
 
 app.use('/projet', userRoutes)
 
